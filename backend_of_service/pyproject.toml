@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "backend-of-service"
+version = "0.1.0"
+description = ""
+authors = ["Aleksandr Mamylov <alexadevv@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.0"
+pydantic = "^2.9.2"
+pydantic-settings = "^2.5.2"
+uvicorn = "^0.30.6"
+pyspark = "^3.5.2"
+nltk = "^3.9.1"
+numpy = "^2.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
