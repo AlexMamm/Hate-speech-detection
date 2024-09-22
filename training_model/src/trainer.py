@@ -18,7 +18,7 @@ class Trainer:
         self.data_path = data_path
         self.spark = self._initialize_spark()
         self.data = self.load_data()
-        self.mlflow_tracking_uri = "http://89.169.167.0:8000"
+        self.mlflow_tracking_uri = "http://158.160.24.72:8000"
         self.mlflow_experiment = "Speech detection"
         self.params: dict = {
             "num_features": 20000,
@@ -131,15 +131,14 @@ class Trainer:
         model.write().overwrite().save(self.model_path)
         print(f"Model uploaded to S3 bucket: {self.model_path}")
 
-    def predict(self, model_path: str, new_comment: str) -> dict:
+    def predict(self, new_comment: str) -> dict:
         """
         Load a model from the given path and predict the label for a new comment.
 
-        :param model_path: Path to the saved model (local or S3)
         :param new_comment: New comment text for prediction
         :return: Dictionary with predicted label and probabilities
         """
-        model = PipelineModel.load(model_path)
+        model = PipelineModel.load(self.model_path)
         data = [Row(Content=new_comment)]
         new_data_df = self.spark.createDataFrame(data)
 
@@ -163,9 +162,7 @@ if __name__ == '__main__':
     metrics = trainer.evaluate_model(model)
 
     trainer.save_model(model)
-
     prediction = trainer.predict(
-        model_path="s3a://amamylov-mlops/hate_speech_detection/model",
         new_comment="This is a good comment!"
     )
     print(metrics)
