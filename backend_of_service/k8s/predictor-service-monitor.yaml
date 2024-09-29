@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: predictor-svc-monitor
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      app: predictor
+  jobLabel: predictor
+  endpoints:
+  - path: /metrics
+    port: predictor
+    scheme: http
+    interval: 5s

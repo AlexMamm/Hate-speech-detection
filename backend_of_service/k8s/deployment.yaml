@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictor-deployment
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: predictor
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 33%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: predictor
+    spec:
+      containers:
+      - name: predictor
+        image: alexxaadevv/hate_speech_detection_service:0.5.0
+        ports:
+        - containerPort: 80
+        startupProbe:
+          httpGet:
+            path: /api/v1/startup
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /api/v1/ready
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 2
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 80
+          initialDelaySeconds: 30
+          failureThreshold: 2
+          periodSeconds: 10

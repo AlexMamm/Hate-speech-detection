@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from pyspark.ml import PipelineModel
 from pyspark.sql import SparkSession, DataFrame
 import uvicorn
+from starlette_exporter import PrometheusMiddleware, handle_metrics
 
 from config import Config
 from api_schemas import CommentRequest, CommentPrediction
@@ -9,6 +10,8 @@ from api_schemas import CommentRequest, CommentPrediction
 
 config = Config()
 app = FastAPI()
+app.add_middleware(PrometheusMiddleware)
+app.add_route("/metrics", handle_metrics)
 
 spark: SparkSession = SparkSession.builder \
     .appName("Text Classification with PySpark") \
@@ -98,7 +101,12 @@ async def predict(request: CommentRequest, model: PipelineModel = Depends(load_m
 
         normal_probability: float = round(processed_text.select("probability").collect()[0][0][0], 3)
         hate_probability: float = round(processed_text.select("probability").collect()[0][0][1], 3)
-        label: str = "Toxic comment" if hate_probability > 0.5 else "Normal comment"
+
+        if hate_probability > 0.5:
+            label = "Toxic comment"
+        else:
+            label = "Normal comment"
+
         return CommentPrediction(
             normal_probability=normal_probability,
             hate_probability=hate_probability,
