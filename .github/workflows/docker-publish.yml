@@ -27,11 +27,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y awscli
 
-    - name: Configure AWS credentials
-      run: |
-        aws configure set aws_access_key_id 
-        aws configure set aws_secret_access_key 
-
     - name: Download model from S3 (Yandex Object Storage)
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
