@@ -40,8 +40,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: .
-        file: ./Dockerfile
+        context: ./backend_of_service
+        file: ./backend_of_service/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_TAG }}
 
