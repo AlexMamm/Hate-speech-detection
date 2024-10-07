@@ -29,12 +29,18 @@ jobs:
 
     - name: Configure AWS credentials
       run: |
-        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set aws_access_key_id 
+        aws configure set aws_secret_access_key 
 
     - name: Download model from S3 (Yandex Object Storage)
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ru-central1
+        AWS_EC2_METADATA_DISABLED: true
       run: |
         aws s3 cp s3://amamylov-mlops/hate_speech_detection/model/ backend_of_service/model/ --recursive --endpoint-url=https://storage.yandexcloud.net
+      shell: bash
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
