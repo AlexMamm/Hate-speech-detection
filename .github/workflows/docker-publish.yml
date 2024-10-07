@@ -34,8 +34,7 @@ jobs:
 
     - name: Download model from S3 (Yandex Object Storage)
       run: |
-        mkdir -p backend_of_service/
-        aws s3 cp s3://amamylov-mlops/hate_speech_detection/model/ backend_of_service/ --recursive --endpoint-url=https://storage.yandexcloud.net
+        aws s3 cp s3://amamylov-mlops/hate_speech_detection/model/ backend_of_service/model/ --recursive --endpoint-url=https://storage.yandexcloud.net
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
